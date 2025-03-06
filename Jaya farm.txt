@@ -44,7 +44,7 @@
                         <div class="card-body">
                             <h5 class="card-title">Product 1</h5>
                             <p class="card-text">This is a product description.</p>
-                            <button class="btn btn-primary" onclick="addToCart('Product 1', 13.99)">Add to Cart ($13.99)</button>
+                            <button class="btn btn-primary" onclick="addToCart('Goat ', 13.99)">Add to Cart ($13.99)</button>
                         </div>
                     </div>
                 </div>
@@ -54,7 +54,7 @@
                         <div class="card-body">
                             <h5 class="card-title">Product 2</h5>
                             <p class="card-text">This is another product description.</p>
-                            <button class="btn btn-primary" onclick="addToCart('Product 2', 6.99)">Add to Cart ($6.99)</button>
+                            <button class="btn btn-primary" onclick="addToCart('goat 2', 6.99)">Add to Cart ($6.99)</button>
                         </div>
                     </div>
                 </div>
@@ -149,15 +149,96 @@
             modalContent.appendChild(modalHeader);
             let modalBody = document.createElement('div');
             modalBody.className = 'modal-body';
-            modalBody.textContent = 'Thank you for your purchase!';
+            let paymentMethodSelect = document.createElement('select');
+            paymentMethodSelect.className = 'form-select';
+            let cardOption = document.createElement('option');
+            cardOption.value = 'card';
+            cardOption.textContent = 'Card';
+            paymentMethodSelect.appendChild(cardOption);
+            let paymentForm = document.createElement('form');
+            paymentForm.id = 'payment-form';
+            let cardNumberLabel = document.createElement('label');
+            cardNumberLabel.textContent = 'Card Number:';
+            let cardNumberInput = document.createElement('input');
+            cardNumberInput.type = 'text';
+            cardNumberInput.className = 'form-control';
+            cardNumberInput.id = 'card-number';
+            let expirationDateLabel = document.createElement('label');
+            expirationDateLabel.textContent = 'Expiration Date (MM/YY):';
+            let expirationDateInput = document.createElement('input');
+            expirationDateInput.type = 'text';
+            expirationDateInput.className = 'form-control';
+            expirationDateInput.id = 'expiration-date';
+            let cvvLabel = document.createElement('label');
+            cvvLabel.textContent = 'CVV:';
+            let cvvInput = document.createElement('input');
+            cvvInput.type = 'text';
+            cvvInput.className = 'form-control';
+            cvvInput.id = 'cvv';
+            let submitButton = document.createElement('button');
+            submitButton.type = 'submit';
+            submitButton.className = 'btn btn-primary';
+            submitButton.textContent = 'Pay Now';
+            paymentForm.appendChild(cardNumberLabel);
+            paymentForm.appendChild(cardNumberInput);
+            paymentForm.appendChild(expirationDateLabel);
+            paymentForm.appendChild(expirationDateInput);
+            paymentForm.appendChild(cvvLabel);
+            paymentForm.appendChild(cvvInput);
+            paymentForm.appendChild(submitButton);
+            paymentForm.onsubmit = function(event) {
+                event.preventDefault();
+                let cardNumber = document.getElementById('card-number').value;
+                let expirationDate = document.getElementById('expiration-date').value;
+                let cvv = document.getElementById('cvv').value;
+                if (cardNumber && expirationDate && cvv) {
+                    let paymentConfirmationModal = document.createElement('div');
+                    paymentConfirmationModal.className = 'modal fade';
+                    paymentConfirmationModal.id = 'payment-confirmation-modal';
+                    paymentConfirmationModal.tabIndex = -1;
+                    paymentConfirmationModal.role = 'dialog';
+                    let paymentConfirmationModalDialog = document.createElement('div');
+                    paymentConfirmationModalDialog.className = 'modal-dialog';
+                    let paymentConfirmationModalContent = document.createElement('div');
+                    paymentConfirmationModalContent.className = 'modal-content';
+                    let paymentConfirmationModalHeader = document.createElement('div');
+                    paymentConfirmationModalHeader.className = 'modal-header';
+                    let paymentConfirmationModalTitle = document.createElement('h5');
+                    paymentConfirmationModalTitle.className = 'modal-title';
+                    paymentConfirmationModalTitle.textContent = 'Payment Confirmation';
+                    let paymentConfirmationModalCloseButton = document.createElement('button');
+                    paymentConfirmationModalCloseButton.type = 'button';
+                    paymentConfirmationModalCloseButton.className = 'btn-close';
+                    paymentConfirmationModalCloseButton.onclick = function() {
+                        paymentConfirmationModal.remove();
+                    };
+                    paymentConfirmationModalHeader.appendChild(paymentConfirmationModalTitle);
+                    paymentConfirmationModalHeader.appendChild(paymentConfirmationModalCloseButton);
+                    paymentConfirmationModalContent.appendChild(paymentConfirmationModalHeader);
+                    let paymentConfirmationModalBody = document.createElement('div');
+                    paymentConfirmationModalBody.className = 'modal-body';
+                    paymentConfirmationModalBody.textContent = 'Payment successful. Thank you for your purchase!';
+                    paymentConfirmationModalContent.appendChild(paymentConfirmationModalBody);
+                    paymentConfirmationModalDialog.appendChild(paymentConfirmationModalContent);
+                    paymentConfirmationModal.appendChild(paymentConfirmationModalDialog);
+                    document.body.appendChild(paymentConfirmationModal);
+                    let paymentConfirmationModalInstance = new bootstrap.Modal(paymentConfirmationModal, { keyboard: false });
+                    paymentConfirmationModalInstance.show();
+                    modal.remove();
+                    cart = [];
+                    updateCartTable();
+                } else {
+                    alert('Please fill in all fields.');
+                }
+            };
+            modalBody.appendChild(paymentMethodSelect);
+            modalBody.appendChild(paymentForm);
             modalContent.appendChild(modalBody);
             modalDialog.appendChild(modalContent);
             modal.appendChild(modalDialog);
             document.body.appendChild(modal);
             let modalInstance = new bootstrap.Modal(modal, { keyboard: false });
             modalInstance.show();
-            cart = [];
-            updateCartTable();
         }
     </script>
 </body>
